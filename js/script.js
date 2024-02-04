@@ -48,7 +48,7 @@ const Gameboard = (function() {
         checkForWin
     };
 })();
-Gameboard.checkForWin()
+
 function cell() {
     let value = "";
 
@@ -129,24 +129,21 @@ function gameController() {
         playRound
     };
 }
-const game = gameController()
-const player = playerController()
-game.start()
-game.playRound(0, 0)
-player.switchPlayerTurn()
-console.log(`${player.getActivePlayer().name}'s turn`);
-console.log(`dropping ${player.getActivePlayer().name}'s token into row ${1} column ${2}`);
-game.playRound(0, 1)
-player.switchPlayerTurn();
-console.log(`${player.getActivePlayer().name}'s turn`);
-console.log(`dropping ${player.getActivePlayer().name}'s token into row ${2} column ${0}`);
-game.playRound(1, 0)
-player.switchPlayerTurn();
-console.log(`${player.getActivePlayer().name}'s turn`);
-console.log(`dropping ${player.getActivePlayer().name}'s token into row ${2} column ${2}`);
-game.playRound(1, 1)
-player.switchPlayerTurn();
-console.log(`${player.getActivePlayer().name}'s turn`);
-console.log(`dropping ${player.getActivePlayer().name}'s token into row ${3} column ${1}`);
-game.playRound(2, 0)
 
+const handleDomLogic = (function() {
+    const playerTurnContainer = document.querySelector(".player-turn");
+    const gameBoardContainer = document.querySelector(".gameboard");
+    const renderBoard = () => {
+        const board = Gameboard.getBoard()
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[i].length; j++) {
+                const cell = document.createElement("div");
+                cell.classList.add("cell");
+                cell.textContent = "X"
+                gameBoardContainer.appendChild(cell);
+            }
+        }        
+    }
+    return {renderBoard}
+})();
+handleDomLogic.renderBoard()
