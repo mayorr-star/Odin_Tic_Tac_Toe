@@ -2,7 +2,8 @@ const Gameboard = (function() {
     const rows = 3;
     const columns = 3;
     const gameBoard = [];
-
+    
+    
     for (let i = 0; i < rows; i++) {
         gameBoard[i] = [];
         for (let j = 0; j < columns; j++) {
@@ -22,14 +23,32 @@ const Gameboard = (function() {
             }
         })
     };
-
+    const checkForDraw = () => {
+        return gameBoard.every(row => row.every(cell => cell.getValue() !== ""));
+    }
+    const checkForWin = () => {
+        for (let i = 0; i < gameBoard.length; i++) {
+            if (gameBoard[0][i].getValue() === gameBoard[1][i].getValue() && gameBoard[0][i].getValue() === gameBoard[2][i].getValue()) {
+                return gameBoard[0][i].getValue();
+            } else if (gameBoard[i][0].getValue() === gameBoard[i][1].getValue() && gameBoard[i][0].getValue() === gameBoard[i][2].getValue()) {
+                return gameBoard[i][0].getValue();
+            }
+            if (gameBoard[0][0].getValue() === gameBoard[1][1].getValue() && gameBoard[0][0].getValue() === gameBoard[2][2].getValue()){
+                return gameBoard[0][0].getValue();
+            } else if(gameBoard[0][2].getValue() === gameBoard[1][1].getValue() && gameBoard[0][2].getValue() === gameBoard[2][0].getValue()) {
+                return gameBoard[0][2].getValue();
+            }
+        }
+    };
     return {
         getBoard,
         dropToken,
-        printBoard
+        printBoard,
+        checkForDraw,
+        checkForWin
     };
 })();
-
+Gameboard.checkForWin()
 function cell() {
     let value = "";
 
@@ -74,7 +93,7 @@ function playerController() {
 
 function gameController() {
     const player = playerController();
-    const gameOver = false;
+    let gameOver = false;
 
     const start = () => {
         Gameboard.getBoard()
@@ -88,7 +107,20 @@ function gameController() {
         console.log(`dropping ${player.getActivePlayer().name}'s token into row ${row + 1} column ${column + 1}`);
         Gameboard.dropToken(player.getActivePlayer().token, row, column);
         Gameboard.printBoard();
-        player.switchPlayerTurn()
+        Gameboard.checkForDraw();
+        Gameboard.checkForWin();
+
+        if (Gameboard.checkForDraw()) {
+            gameOver = true;
+            //do something
+            console.log("draw")
+        }
+        if (Gameboard.checkForWin()) {
+            gameOver = true;
+            //do something
+            console.log(`${player.getActivePlayer().token} wins`)
+        }
+        player.switchPlayerTurn();
     }
 
     return {
@@ -97,3 +129,24 @@ function gameController() {
         playRound
     };
 }
+const game = gameController()
+const player = playerController()
+game.start()
+game.playRound(0, 0)
+player.switchPlayerTurn()
+console.log(`${player.getActivePlayer().name}'s turn`);
+console.log(`dropping ${player.getActivePlayer().name}'s token into row ${1} column ${2}`);
+game.playRound(0, 1)
+player.switchPlayerTurn();
+console.log(`${player.getActivePlayer().name}'s turn`);
+console.log(`dropping ${player.getActivePlayer().name}'s token into row ${2} column ${0}`);
+game.playRound(1, 0)
+player.switchPlayerTurn();
+console.log(`${player.getActivePlayer().name}'s turn`);
+console.log(`dropping ${player.getActivePlayer().name}'s token into row ${2} column ${2}`);
+game.playRound(1, 1)
+player.switchPlayerTurn();
+console.log(`${player.getActivePlayer().name}'s turn`);
+console.log(`dropping ${player.getActivePlayer().name}'s token into row ${3} column ${1}`);
+game.playRound(2, 0)
+
