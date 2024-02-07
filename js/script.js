@@ -11,12 +11,6 @@ const Gameboard = (function () {
   }
 
   const getBoard = () => gameBoard;
-  const printBoard = () => {
-    const boardWithTokens = gameBoard.map((row) =>
-      row.map((cell) => cell.getValue())
-    );
-    console.log(boardWithTokens);
-  };
   const dropToken = (player, selectedRow, selectedColumn) => {
     const updatedBoard = gameBoard.map((row, index) => {
       if (selectedRow === index) {
@@ -58,7 +52,6 @@ const Gameboard = (function () {
   return {
     getBoard,
     dropToken,
-    printBoard,
     checkForDraw,
     checkForWin,
   };
@@ -112,53 +105,46 @@ function gameController() {
   const player = playerController();
   let gameOver = false;
 
-  const start = () => {
-    Gameboard.getBoard();
-    console.log(Gameboard.getBoard());
-  };
   const reset = () => {
     gameOver = false;
+    console.log(Gameboard.getBoard().map(row => row.map(cell => cell.getValue())))
   };
   
   const playRound = (row, column) => {
-    console.log(`${player.getActivePlayer().name}'s turn`);
-    console.log(
-      `dropping ${
-        player.getActivePlayer().name
-      }'s token into row ${row} column ${column}`
-    );
     Gameboard.dropToken(player.getActivePlayer().token, row, column);
-    Gameboard.printBoard();
     Gameboard.checkForDraw();
     Gameboard.checkForWin();
 
     if (Gameboard.checkForDraw()) {
       gameOver = true;
-      //do something
-      console.log("draw");
+      return handleDomLogic.displayPlayerTurn(`It's a draw`);
     }
     if (Gameboard.checkForWin()) {
       gameOver = true;
-      //do something
-      console.log(`${player.getActivePlayer().token} wins`);
+      return handleDomLogic.displayPlayerTurn(`${player.getActivePlayer().token} wins`);
     }
     player.switchPlayerTurn();
+    handleDomLogic.displayPlayerTurn(`${player.getActivePlayer().name}'s turn`);
   };
 
+  const getGameStatus = () => gameOver;
+
   return {
-    start,
     reset,
     playRound,
+    getGameStatus
   };
 }
 
 const handleDomLogic = (function () {
   const playerTurnContainer = document.querySelector(".player_turn");
   const gameBoardContainer = document.querySelector(".gameboard");
+  const restartButton = document.querySelector("#restart");
   const board = Gameboard.getBoard();
   const player = playerController();
   const game = gameController();
 
+  restartButton.addEventListener("click", () => game.reset());
   const renderBoard = () => {
     for (let i = 0; i < board.length; i++) {
       for (let j = 0; j < board[i].length; j++) {
@@ -177,21 +163,30 @@ const handleDomLogic = (function () {
   const cells = document.querySelectorAll(".cell");
   cells.forEach((cell) => {
     cell.addEventListener("click", (e) => {
-      const cellRow = parseInt(e.currentTarget.dataset.row);
-      const cellColumn = parseInt(e.currentTarget.dataset.column);
-      placeMarker(e, cellRow, cellColumn);
+      if (!game.getGameStatus()) {
+        const cellRow = parseInt(e.currentTarget.dataset.row);
+        const cellColumn = parseInt(e.currentTarget.dataset.column);
+        placeMarker(e, cellRow, cellColumn);
+      }
     });
 });
+
+const displayPlayerTurn = (message) => {
+  playerTurnContainer.textContent = message;
+}
+displayPlayerTurn(`${player.getActivePlayer().name}'s turn`);
 
 function placeMarker(e, row, column) {
     if (e.target.textContent !== "") return false;
     game.playRound(row, column);
+    // player.switchPlayerTurn();
     e.target.textContent = board[row][column].getValue();
-    e.currentTarget.style.color = player.getActivePlayer().tokenColour;
+    // e.currentTarget.style.color = player.getActivePlayer().tokenColour;
   }
 
   return {
     renderBoard,
     placeMarker,
+    displayPlayerTurn
   };
 })();
