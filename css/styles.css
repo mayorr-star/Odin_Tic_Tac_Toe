@@ -1,0 +1,89 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root{
+    font-size: 12px;
+    --border-color: darkgrey;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    color: var(--border-color);
+}
+
+.tic_tac_toe > .player_turn{
+    font-size: 2.5rem;
+}
+
+header.header > h1{
+    color: var(--border-color);
+}
+
+header.header{
+    text-align: center;
+    margin-bottom: 50px;
+    font-size: 2.5rem;
+}
+
+.button{
+    padding: 20px;
+    border-radius: 7px;
+    outline: none;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.btn_container{
+    margin-top: 30px;
+    text-align: center;
+}
+
+
+/* gameboard styles */
+.gameboard{
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+}
+
+button.cell{
+    background-color: transparent;
+    width: 100px;
+    height: 100px;
+    border-right: 3px solid var(--border-color);
+    border-bottom: 3px solid var(--border-color);
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    font-size: 5rem;
+    outline: 0;
+    color: green;
+}
+
+.cell:nth-child(3), .cell:nth-child(6), .cell:nth-child(9) {
+    border-right: 0;
+}
+
+.cell:nth-child(7), .cell:nth-child(8), .cell:nth-child(9) {
+    border-bottom: 0;
+}
+
+.cell:nth-child(1), .cell:nth-child(4), .cell:nth-child(6) {
+    border-left: 0;
+}
+
+.cell:nth-child(1), .cell:nth-child(2), .cell:nth-child(3) {
+    border-top: 0;
+}
+
+.cell:nth-child(7) {
+    border-left: 0;
+}
