@@ -115,7 +115,7 @@ function gameController() {
       };
     };
     cells.forEach(cell => handleDomLogic.getGameBoardContainer().removeChild(cell));
-    handleDomLogic.renderBoard(Gameboard.getBoard());
+    handleDomLogic.renderBoard();
     if (player.getActivePlayer().name !== "Player 1") {
       player.switchPlayerTurn();
     }
@@ -151,28 +151,69 @@ function gameController() {
 }
 
 const handleDomLogic = (function () {
+  const form = document.querySelector("#form");
   const playerTurnContainer = document.querySelector(".player_turn");
   const gameBoardContainer = document.querySelector(".gameboard");
   const restartButton = document.querySelector("#restart");
+  const startButton = document.querySelector("#start_game");
   const board = Gameboard.getBoard();
   const player = playerController();
   const game = gameController();
 
-  const renderBoard = (gameboard) => {
-    for (let i = 0; i < gameboard.length; i++) {
-      for (let j = 0; j < gameboard[i].length; j++) {
+  const setError = (element, message) => {
+    const parentElement = element.parentNode;
+    const errorDisplay = parentElement.querySelector(".error");
+
+    errorDisplay.textContent = message;
+    parentElement.classList.add("error");
+    parentElement.classList.remove("success");
+  };
+
+  const setSuccess = element => {
+    const parentElement = element.parentNode;
+    const errorDisplay = parentElement.querySelector(".error");
+
+    errorDisplay.textContent = "";
+    parentElement.classList.add("success");
+    parentElement.classList.remove("error");
+  };
+
+  const valdateForm = () => {
+    let isValid = false;
+    const player1 = document.querySelector("#player_1");
+    const player2 = document.querySelector("#player_2");
+    const player1Value = player1.value.trim();
+    const player2Value = player2.value.trim();
+      if (!player1Value) {
+        setError(player1, "This field is required");
+        isValid = false;
+      } else {
+        isValid = true;
+        setSuccess(player1)
+      } if (!player2Value) {
+        setError(player2, "This field is required");
+        isValid = false;
+      } else {
+        isValid = true;
+        setSuccess(player2)
+      }
+      return isValid;
+  };
+  
+  const renderBoard = () => {
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
         const cell = document.createElement("button");
         cell.setAttribute("type", "button");
         cell.classList.add("cell");
         cell.setAttribute("data-row", i);
         cell.setAttribute("data-column", j);
-        cell.textContent = gameboard[i][j].getValue();
+        cell.textContent = board[i][j].getValue();
         gameBoardContainer.appendChild(cell);
       }
     }
   };
-  renderBoard(Gameboard.getBoard());
-
+  
   function getCells() {
     const cells = Array.from(document.querySelectorAll(".cell"));
     cells.forEach((cell) => {
@@ -185,7 +226,6 @@ const handleDomLogic = (function () {
       });
     });
   }
-  getCells();
   
   const displayPlayerTurn = (message) => {
     playerTurnContainer.textContent = message;
@@ -200,13 +240,22 @@ const handleDomLogic = (function () {
     player.switchPlayerTurn()
     e.target.style.color = player.getActivePlayer().tokenColour;
   }
-
+  
   const getGameBoardContainer = () => gameBoardContainer;
   
   restartButton.addEventListener("click", () => {
     game.reset();
     getCells();
   });
+  
+  startButton.addEventListener("click", () => {
+    if (valdateForm()) {
+      form.classList.add("hide");
+      renderBoard();
+      getCells();
+    };
+  });
+
 
   return {
     renderBoard,
