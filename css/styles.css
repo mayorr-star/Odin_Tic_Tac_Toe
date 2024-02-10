@@ -65,7 +65,6 @@ button.cell{
     align-items: center;
     font-size: 5rem;
     outline: 0;
-    color: green;
 }
 
 .cell:nth-child(3), .cell:nth-child(6), .cell:nth-child(9) {
