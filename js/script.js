@@ -80,12 +80,12 @@ function playerController() {
     {
       name: playerOneName,
       token: "X",
-      tokenColour: "green",
+      tokenColour: "yellow",
     },
     {
       name: playerTwoName,
       token: "O",
-      tokenColour: "yellow",
+      tokenColour: "green",
     },
   ];
   let activePlayer = players[0];
@@ -102,14 +102,26 @@ function playerController() {
 }
 
 function gameController() {
+  const board = Gameboard.getBoard();
   const player = playerController();
   let gameOver = false;
 
   const reset = () => {
     gameOver = false;
-    console.log(Gameboard.getBoard().map(row => row.map(cell => cell.getValue())))
+    const cells = document.querySelectorAll(".cell");
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        Gameboard.dropToken("", i, j);
+      };
+    };
+    cells.forEach(cell => handleDomLogic.getGameBoardContainer().removeChild(cell));
+    handleDomLogic.renderBoard(Gameboard.getBoard());
+    if (player.getActivePlayer().name !== "Player 1") {
+      player.switchPlayerTurn();
+    }
+    handleDomLogic.displayPlayerTurn(`${player.getActivePlayer().name}'s turn`);
   };
-  
+
   const playRound = (row, column) => {
     Gameboard.dropToken(player.getActivePlayer().token, row, column);
     Gameboard.checkForDraw();
@@ -121,8 +133,10 @@ function gameController() {
     }
     if (Gameboard.checkForWin()) {
       gameOver = true;
-      return handleDomLogic.displayPlayerTurn(`${player.getActivePlayer().token} wins`);
-    }
+      return handleDomLogic.displayPlayerTurn(
+        `${player.getActivePlayer().token} wins`
+      );
+    }    
     player.switchPlayerTurn();
     handleDomLogic.displayPlayerTurn(`${player.getActivePlayer().name}'s turn`);
   };
@@ -132,7 +146,7 @@ function gameController() {
   return {
     reset,
     playRound,
-    getGameStatus
+    getGameStatus,
   };
 }
 
@@ -144,49 +158,60 @@ const handleDomLogic = (function () {
   const player = playerController();
   const game = gameController();
 
-  restartButton.addEventListener("click", () => game.reset());
-  const renderBoard = () => {
-    for (let i = 0; i < board.length; i++) {
-      for (let j = 0; j < board[i].length; j++) {
+  const renderBoard = (gameboard) => {
+    for (let i = 0; i < gameboard.length; i++) {
+      for (let j = 0; j < gameboard[i].length; j++) {
         const cell = document.createElement("button");
         cell.setAttribute("type", "button");
         cell.classList.add("cell");
         cell.setAttribute("data-row", i);
         cell.setAttribute("data-column", j);
-        cell.textContent = board[i][j].getValue();
+        cell.textContent = gameboard[i][j].getValue();
         gameBoardContainer.appendChild(cell);
       }
     }
   };
-  renderBoard();
+  renderBoard(Gameboard.getBoard());
 
-  const cells = document.querySelectorAll(".cell");
-  cells.forEach((cell) => {
-    cell.addEventListener("click", (e) => {
-      if (!game.getGameStatus()) {
-        const cellRow = parseInt(e.currentTarget.dataset.row);
-        const cellColumn = parseInt(e.currentTarget.dataset.column);
-        placeMarker(e, cellRow, cellColumn);
-      }
+  function getCells() {
+    const cells = Array.from(document.querySelectorAll(".cell"));
+    cells.forEach((cell) => {
+      cell.addEventListener("click", (e) => {
+        if (!game.getGameStatus()) {
+          const cellRow = parseInt(e.currentTarget.dataset.row);
+          const cellColumn = parseInt(e.currentTarget.dataset.column);
+          placeMarker(e, cellRow, cellColumn);
+        }
+      });
     });
-});
-
-const displayPlayerTurn = (message) => {
-  playerTurnContainer.textContent = message;
-}
-displayPlayerTurn(`${player.getActivePlayer().name}'s turn`);
-
-function placeMarker(e, row, column) {
-    if (e.target.textContent !== "") return false;
-    game.playRound(row, column);
-    // player.switchPlayerTurn();
-    e.target.textContent = board[row][column].getValue();
-    // e.currentTarget.style.color = player.getActivePlayer().tokenColour;
   }
+  getCells();
+  
+  const displayPlayerTurn = (message) => {
+    playerTurnContainer.textContent = message;
+  };
+  displayPlayerTurn(`${player.getActivePlayer().name}'s turn`);
+
+  function placeMarker(e, row, column) {
+    if (e.target.textContent !== "") return false;
+    e.target.style.color = player.getActivePlayer().tokenColour;
+    game.playRound(row, column);
+    e.target.textContent = board[row][column].getValue();
+    player.switchPlayerTurn()
+    e.target.style.color = player.getActivePlayer().tokenColour;
+  }
+
+  const getGameBoardContainer = () => gameBoardContainer;
+  
+  restartButton.addEventListener("click", () => {
+    game.reset();
+    getCells();
+  });
 
   return {
     renderBoard,
     placeMarker,
-    displayPlayerTurn
+    displayPlayerTurn,
+    getGameBoardContainer,
   };
 })();
