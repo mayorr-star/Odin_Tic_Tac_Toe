@@ -19,8 +19,8 @@
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+- Solution URL: [git@github.com:mayorr-star/Odin_Tic_Tac_Toe.git](https://git@github.com:mayorr-star/Odin_Tic_Tac_Toe.git)
+- Live Site URL: [https://mayorr-star.github.io/Odin_Tic_Tac_Toe/](https://https://mayorr-star.github.io/Odin_Tic_Tac_Toe/)
 
 ## My process
 
