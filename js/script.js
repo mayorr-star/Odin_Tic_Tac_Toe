@@ -73,8 +73,8 @@ function cell() {
 }
 
 function playerController() {
-  const playerOneName = "Player 1";
-  const playerTwoName = "Player 2";
+  const playerOneName = "Player X";
+  const playerTwoName = "Player O";
 
   const players = [
     {
@@ -153,6 +153,7 @@ function gameController() {
 const handleDomLogic = (function () {
   const form = document.querySelector("#form");
   const playerTurnContainer = document.querySelector(".player_turn");
+  const ticTacToeContainer = document.querySelector(".tic_tac_toe");
   const gameBoardContainer = document.querySelector(".gameboard");
   const restartButton = document.querySelector("#restart");
   const startButton = document.querySelector("#start_game");
@@ -177,28 +178,6 @@ const handleDomLogic = (function () {
     parentElement.classList.add("success");
     parentElement.classList.remove("error");
   };
-
-  const valdateForm = () => {
-    let isValid = false;
-    const player1 = document.querySelector("#player_1");
-    const player2 = document.querySelector("#player_2");
-    const player1Value = player1.value.trim();
-    const player2Value = player2.value.trim();
-      if (!player1Value) {
-        setError(player1, "This field is required");
-        isValid = false;
-      } else {
-        isValid = true;
-        setSuccess(player1)
-      } if (!player2Value) {
-        setError(player2, "This field is required");
-        isValid = false;
-      } else {
-        isValid = true;
-        setSuccess(player2)
-      }
-      return isValid;
-  };
   
   const renderBoard = () => {
     for (let i = 0; i < board.length; i++) {
@@ -213,6 +192,7 @@ const handleDomLogic = (function () {
       }
     }
   };
+  renderBoard();
   
   function getCells() {
     const cells = Array.from(document.querySelectorAll(".cell"));
@@ -226,6 +206,7 @@ const handleDomLogic = (function () {
       });
     });
   }
+  getCells();
   
   const displayPlayerTurn = (message) => {
     playerTurnContainer.textContent = message;
@@ -248,15 +229,6 @@ const handleDomLogic = (function () {
     getCells();
   });
   
-  startButton.addEventListener("click", () => {
-    if (valdateForm()) {
-      form.classList.add("hide");
-      renderBoard();
-      getCells();
-    };
-  });
-
-
   return {
     renderBoard,
     placeMarker,
