@@ -19,62 +19,6 @@ body{
     color: var(--border-color);
 }
 
-/* Form */
-fieldset > legend{
-    font-size: 1.5rem;
-}
-
-form label{
-    font-size: 1.2rem;
-    font-weight: 700;
-}
-
-form > fieldset{
-    padding: 20px;
-    width: 300px;
-}
-
-.input_control{
-    display: flex;
-    flex-direction: column;
-}
-
-.input_control input{
-    border: 2px solid #f0f0f0;
-    display: block;
-    border-radius: 4px;
-    width: 100%;
-    padding: 10px;
-}
-
-.input_control small{
-    margin-bottom: 10px;
-}
-
-.input_control input:focus{
-    outline: none;
-}
-
-.start_button{
-    margin-top: 10px;
-}
-
-.input_control.error input{
-    border-color: var(--error-color);
-}
-
-.input_control.success input{
-    border-color: var(--success-color);
-}
-
-.input_control .error{
-    color: var(--error-color);
-}
-
-form.hide{
-    display: none;
-}
-
 .tic_tac_toe > .player_turn{
     font-size: 2.5rem;
 }
