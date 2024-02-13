@@ -161,24 +161,6 @@ const handleDomLogic = (function () {
   const player = playerController();
   const game = gameController();
 
-  const setError = (element, message) => {
-    const parentElement = element.parentNode;
-    const errorDisplay = parentElement.querySelector(".error");
-
-    errorDisplay.textContent = message;
-    parentElement.classList.add("error");
-    parentElement.classList.remove("success");
-  };
-
-  const setSuccess = element => {
-    const parentElement = element.parentNode;
-    const errorDisplay = parentElement.querySelector(".error");
-
-    errorDisplay.textContent = "";
-    parentElement.classList.add("success");
-    parentElement.classList.remove("error");
-  };
-  
   const renderBoard = () => {
     for (let i = 0; i < board.length; i++) {
       for (let j = 0; j < board[i].length; j++) {
